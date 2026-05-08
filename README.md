@@ -74,12 +74,19 @@ python3 manage.py runserver
 - **Database:** SQLite
 - **Model:** LSTM Neural Network
 
-## Contact
-
-For any inquiries feel free to contact via email at `your_email@gmail.com`
-
 ## Results
 
+<img width="1920" height="1080" alt="Screenshot from 2026-05-08 16-32-44" src="https://github.com/user-attachments/assets/56b29cc7-4da4-4056-afef-0f1c1ff26316" />
+
+<img width="1920" height="1080" alt="Screenshot from 2026-05-08 16-33-43" src="https://github.com/user-attachments/assets/ce4c390a-d500-4d3c-bf53-b66a07f5d1f5" />
+
+<img width="1920" height="1080" alt="Screenshot from 2026-05-08 16-33-54" src="https://github.com/user-attachments/assets/2e56d124-a953-47cb-9f71-37a80031597a" />
+
+<img width="1920" height="1080" alt="Screenshot from 2026-05-08 16-34-03" src="https://github.com/user-attachments/assets/db753271-6507-4621-9cb5-a44fab3c6a7b" />
+
+<img width="1920" height="1080" alt="Screenshot from 2026-05-08 16-34-14" src="https://github.com/user-attachments/assets/6e86911f-fbbc-4eb6-acf7-34ea6c628e20" />
+
+<img width="1920" height="1080" alt="Screenshot from 2026-05-08 16-34-23" src="https://github.com/user-attachments/assets/13d3f44b-b9fe-43f1-baea-388899881735" />
 <!-- Add your screenshots here after uploading them to GitHub -->
 <!-- ![Login Page](screenshots/login.png) -->
 <!-- ![Predict Page](screenshots/predict.png) -->
