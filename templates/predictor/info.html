@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Info & Help</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Stock AI</h2>
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/upload/">Data Cleaning</a>
+        <a href="/predict/">Predict Price</a>
+        <a href="/info/" class="active">Model & Help</a>
+        <a href="/logout/">Logout</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="topbar">
+            <h3>Model Info & Help</h3>
+            <span>Understanding the AI & how to use it</span>
+        </div>
+
+        <!-- MODEL INFO SECTION -->
+        <div class="info-wrapper">
+
+            <!-- LEFT COLUMN -->
+            <div class="info-col">
+
+                <div class="info-card">
+                    <div class="info-card-icon"></div>
+                    <h4>Model Architecture</h4>
+                    <div class="info-table">
+                        <div class="info-row">
+                            <span>Type</span>
+                            <strong>LSTM Neural Network</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Layer 1</span>
+                            <strong>LSTM — 50 units, return sequences</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Layer 2</span>
+                            <strong>LSTM — 50 units</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Layer 3</span>
+                            <strong>Dense — 1 unit (output)</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Input Shape</span>
+                            <strong>60 timesteps × 1 feature</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Output</span>
+                            <strong>Next closing price</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card" style="margin-top:20px;">
+                    <div class="info-card-icon"></div>
+                    <h4>Training Data</h4>
+                    <div class="info-table">
+                        <div class="info-row">
+                            <span>Stock</span>
+                            <strong>Reliance Industries</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Data Range</span>
+                            <strong>5 Years Historical</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Feature Used</span>
+                            <strong>Close Price</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Scaling</span>
+                            <strong>MinMax (0 to 1)</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Time Step</span>
+                            <strong>60 days lookback</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="info-col">
+
+                <div class="info-card">
+                    <div class="info-card-icon"></div>
+                    <h4>How to Use</h4>
+
+                    <div class="help-steps">
+
+                        <div class="help-step">
+                            <div class="step-num">1</div>
+                            <div class="step-content">
+                                <strong>Login</strong>
+                                <p>Sign in to your account to access all features.</p>
+                            </div>
+                        </div>
+
+                        <div class="help-step">
+                            <div class="step-num">2</div>
+                            <div class="step-content">
+                                <strong>Upload Your Data</strong>
+                                <p>Go to <em>Data Cleaning</em> and upload a CSV file containing stock data. Make sure it has a <code>close_price</code> column with at least 60 rows.</p>
+                            </div>
+                        </div>
+
+                        <div class="help-step">
+                            <div class="step-num">3</div>
+                            <div class="step-content">
+                                <strong>Generate Forecast</strong>
+                                <p>Go to <em>Predict Price</em>, select your forecast range (1 day, 7 days, or 30 days) and click Generate.</p>
+                            </div>
+                        </div>
+
+                        <div class="help-step">
+                            <div class="step-num">4</div>
+                            <div class="step-content">
+                                <strong>Analyse the Chart</strong>
+                                <p>The result page shows historical prices vs predicted prices on a chart. Blue line = historical, red dashed = predicted.</p>
+                            </div>
+                        </div>
+
+                        <div class="help-step">
+                            <div class="step-num">5</div>
+                            <div class="step-content">
+                                <strong>View Live Charts</strong>
+                                <p>Go to <em>View Charts</em> and enter any NSE stock symbol (e.g. TCS.NS, INFY.NS) to see live 6-month price data with moving average.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="info-card" style="margin-top:20px;">
+                    <div class="info-card-icon"></div>
+                    <h4>Important Notes</h4>
+                    <div class="info-table">
+                        <div class="info-row">
+                            <span>1-day forecast</span>
+                            <strong style="color:#27ae60;">High accuracy</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>7-day forecast</span>
+                            <strong style="color:#f59e0b;">Moderate accuracy</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>30-day forecast</span>
+                            <strong style="color:#e74c3c;">Lower accuracy</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>CSV format</span>
+                            <strong>Must have close_price column</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>Min rows needed</span>
+                            <strong>At least 60 rows</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

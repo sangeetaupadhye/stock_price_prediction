@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Cleaning</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Stock AI</h2>
+
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/upload/" class="active">Data Cleaning</a>
+        <a href="/predict/">Predict Price</a>
+        <a href="/info/">Model & Help</a>
+        <a href="/logout/">Logout</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOPBAR -->
+        <div class="topbar">
+            <h3>Data Cleaning</h3>
+
+            {% if data %}
+                <a href="/upload/" class="reset-btn">↺ Upload New File</a>
+            {% else %}
+                <span>Upload → Clean → Download</span>
+            {% endif %}
+        </div>
+
+        <!-- UPLOAD SECTION (HIDDEN AFTER PROCESS) -->
+        {% if not data %}
+        <div class="upload-card">
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="upload-box">
+                    <input type="file" name="file" accept=".csv" required>
+                    <p>Select or drag your CSV file</p>
+                </div>
+
+                <button class="upload-btn">
+                    Upload & Clean Dataset
+                </button>
+            </form>
+
+        </div>
+        {% endif %}
+
+        <!-- RESULT SECTION -->
+        {% if data %}
+
+        <div class="result-card">
+
+            <div class="result-container">
+
+                <!-- LEFT: STATS -->
+                <div class="result-left">
+                    <div class="stats-box">
+                        <h4>Cleaning Summary</h4>
+
+                        <p><strong>Original Rows:</strong> {{ stats.original_rows }}</p>
+                        <p><strong>Final Rows:</strong> {{ stats.final_rows }}</p>
+                        <p><strong>Duplicates Removed:</strong> {{ stats.duplicates_removed }}</p>
+                        <p><strong>Missing Removed:</strong> {{ stats.missing_removed }}</p>
+                    </div>
+                </div>
+
+                <!-- RIGHT: ACTIONS -->
+                <div class="result-right">
+
+                    <div class="action-group">
+                        <a href="{{ download_url }}" class="action-btn download">
+                            Download Cleaned Dataset
+                        </a>
+
+                        <button onclick="toggleTable()" class="action-btn view">
+                            Preview Cleaned Data
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- TABLE PREVIEW -->
+        <div id="tableSection" class="table-wrapper hidden">
+
+            <div class="table-card">
+                <h4>Preview (First 5 Rows)</h4>
+
+                <table>
+                    <thead>
+                        <tr>
+                            {% for col in columns %}
+                            <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for row in data|slice:":5" %}
+                        <tr>
+                            {% for item in row %}
+                            <td>{{ item }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+function toggleTable() {
+    const table = document.getElementById("tableSection");
+    table.classList.toggle("hidden");
+}
+</script>
+
+</body>
+</html>

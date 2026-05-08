@@ -1,0 +1,199 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Charts</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Stock AI</h2>
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/upload/">Data Cleaning</a>
+        <a href="/predict/">Predict Price</a>
+        <a href="/charts/" class="active">View Charts</a>
+        <a href="/logout/">Logout</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <div class="topbar">
+            <h3>Stock Charts</h3>
+            <span>Live market data & moving average</span>
+        </div>
+
+        <!-- SEARCH CARD -->
+        <div class="upload-card">
+            <label style="font-weight:600; font-size:16px; display:block; margin-bottom:10px;">
+                Enter Stock Symbol
+            </label>
+            <div class="chart-controls">
+                <input type="text" id="stockInput" placeholder="e.g. TCS.NS, RELIANCE.NS" value="TCS.NS" />
+                <button class="load-btn" onclick="loadChart()">Load Chart</button>
+                <span id="loadingMsg"> Fetching data...</span>
+            </div>
+            <small style="color:#aaa; font-size:12px;">
+                Use NSE symbols like TCS.NS, RELIANCE.NS, INFY.NS
+            </small>
+        </div>
+
+        <!-- CHART CARD -->
+        <div class="chart-card" id="chartCard">
+
+            <!-- Empty state -->
+            <div class="empty-state" id="emptyState">
+                <div class="icon"></div>
+                <p>Enter a stock symbol above and click <strong>Load Chart</strong></p>
+            </div>
+
+            <!-- Chart content (hidden until loaded) -->
+            <div id="chartContent" style="display:none;">
+
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+                    <h4 id="chartTitle" style="font-size:16px; font-weight:700; color:#333; margin:0;"></h4>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#4e73df;"></div> Close Price
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-dot" style="background:#f6c23e;"></div> 10-Day MA
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meta stats -->
+                <div class="chart-meta" id="chartMeta"></div>
+
+                <canvas id="stockChart" height="90"></canvas>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let chartInstance = null;
+
+    function loadChart() {
+        const stock = document.getElementById('stockInput').value.trim();
+        if (!stock) return;
+
+        document.getElementById('loadingMsg').style.display = 'inline';
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('chartContent').style.display = 'none';
+
+        fetch(`/chart-data/?stock=${stock}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('loadingMsg').style.display = 'none';
+
+                if (!data.prices || data.prices.length === 0) {
+                    document.getElementById('emptyState').style.display = 'block';
+                    document.getElementById('emptyState').innerHTML = `
+                        <div class="icon"></div>
+                        <p>No data found for <strong>${stock}</strong>. Check the symbol and try again.</p>
+                    `;
+                    return;
+                }
+
+                // Stats
+                const prices = data.prices;
+                const latest = prices[prices.length - 1].toFixed(2);
+                const high = Math.max(...prices).toFixed(2);
+                const low = Math.min(...prices).toFixed(2);
+                const change = (prices[prices.length - 1] - prices[0]).toFixed(2);
+                const changePct = ((change / prices[0]) * 100).toFixed(2);
+                const changeColor = change >= 0 ? '#27ae60' : '#e74c3c';
+                const changeIcon = change >= 0 ? '↑' : '↓';
+
+                document.getElementById('chartTitle').textContent = `${stock.toUpperCase()} — Last 6 Months`;
+                document.getElementById('chartMeta').innerHTML = `
+                    <div class="meta-box">Latest Close<span>₹${latest}</span></div>
+                    <div class="meta-box">6M High<span>₹${high}</span></div>
+                    <div class="meta-box">6M Low<span>₹${low}</span></div>
+                    <div class="meta-box">6M Change<span style="color:${changeColor}">${changeIcon} ₹${Math.abs(change)} (${Math.abs(changePct)}%)</span></div>
+                `;
+
+                // Destroy old chart before creating new one
+                if (chartInstance) chartInstance.destroy();
+
+                const ctx = document.getElementById('stockChart').getContext('2d');
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [
+                            {
+                                label: 'Close Price',
+                                data: data.prices,
+                                borderColor: '#4e73df',
+                                backgroundColor: 'rgba(78,115,223,0.08)',
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                fill: true,
+                                tension: 0.3,
+                            },
+                            {
+                                label: '10-Day MA',
+                                data: data.ma,
+                                borderColor: '#f6c23e',
+                                backgroundColor: 'transparent',
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                fill: false,
+                                tension: 0.3,
+                                borderDash: [5, 3],
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        animation: { duration: 600 },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: ctx => `${ctx.dataset.label}: ₹${ctx.parsed.y.toFixed(2)}`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { maxTicksLimit: 8, font: { size: 11 } },
+                                grid: { display: false }
+                            },
+                            y: {
+                                ticks: {
+                                    callback: val => `₹${val.toFixed(0)}`,
+                                    font: { size: 11 }
+                                },
+                                grid: { color: 'rgba(0,0,0,0.04)' }
+                            }
+                        }
+                    }
+                });
+
+                document.getElementById('chartContent').style.display = 'block';
+            })
+            .catch(() => {
+                document.getElementById('loadingMsg').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('emptyState').innerHTML = `
+                    <div class="icon"></div>
+                    <p>Failed to fetch data. Please check your internet connection.</p>
+                `;
+            });
+    }
+</script>
+
+</body>
+</html>

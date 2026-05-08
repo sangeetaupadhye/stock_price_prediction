@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+
+<body>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Stock AI</h2>
+
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/upload/">Data Cleaning</a>
+        {% comment %} <a href="#">Data Cleaning</a> {% endcomment %}
+        <a href="/predict/">Predict Price</a>
+        <a href="/info/">Model & Help</a>
+        <a href="/logout/">Logout</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <h3>Dashboard</h3>
+            <span>Welcome, {{ request.user.first_name }}</span>
+        </div>
+
+        <!-- ACTION PANEL -->
+        <div class="actions">
+
+            <button>
+                <h4>Upload Dataset</h4>
+                <p>Import your stock dataset to begin analysis and predictions.</p>
+            </button>
+
+            <button>
+                <h4>Data Cleaning</h4>
+                <p>Handle missing values and prepare clean data for modeling.</p>
+            </button>
+
+            <button>
+                <h4>Predict Price</h4>
+                <p>Run trained model to forecast future stock prices.</p>
+            </button>
+
+            <button>
+                <h4>View Charts</h4>
+                <p>Visualize trends, patterns, and prediction insights.</p>
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
